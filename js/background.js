@@ -1,4 +1,3 @@
-console.log('run')
 
 
 function select(e) {

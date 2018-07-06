@@ -1,4 +1,4 @@
-console.log(document); // it run
+
 // polyfill start
 (function (arr) {
   arr.forEach(function (item) {
@@ -25,11 +25,8 @@ chrome.storage.sync.get({black: ''}, function (items) {
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.method === 'rmImage') {
-    console.log(message.message);
     // 遍历 图片 链接 将路径屏蔽
     var images = getDocumentImage(), l = images.length
-    console.log(location.href)
-    console.log(l, images)
     while (l--) {
       if (images[l].src === message.message) {
         return traceTop(images[l])
@@ -42,7 +39,6 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 function traceTop(image) {
   if (!image) return;
   var feature = trace(image, 0)
-  console.log(feature)
   rmElementByFeature(feature)
   store(feature)
 }
@@ -55,7 +51,6 @@ function store(feature) {
 
   chrome.storage.sync.get({black: {}}, function (items) {
     var result = items.black[host]
-    console.log(result)
     if (result) {
       result.push(feature)
     } else {
@@ -107,7 +102,6 @@ function getDocumentImage() {
 function deleteElement() {
   var myRuleResults = rules[location.origin]
 
-  console.log(myRuleResults)
   if (myRuleResults) {
     var l = myRuleResults.length;
     while (l--) {
@@ -120,7 +114,6 @@ function rmElementByFeature(feature) {
   if (feature.class) {
     var objs = document.getElementsByClassName(feature.class)
     var l = objs.length
-    console.log(objs)
     while (l--) {
       var o = objs[l]
       o && o.remove()
@@ -146,7 +139,6 @@ document.onreadystatechange = function () {
       document.addEventListener("DOMNodeInserted", function (ev) {
         var path = ev.target
         if (/result c-container/.test(path.className)) {
-          console.log('class equal', ev)
           if (/广告/.test(path.innerText)) {
             path.remove()
           }
