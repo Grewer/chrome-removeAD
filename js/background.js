@@ -26,23 +26,7 @@ function select(e) {
 
 
 
-    chrome.storage.sync.get({black: {}}, function (items) {
-      console.log(items)
-      var result = items.black[e.pageUrl]
-      if (result) {
-        if (result.indexOf(e.srcUrl) === -1) {
-          result.push(e.srcUrl)
-        }
 
-      } else {
-        items.black[e.pageUrl] = [e.srcUrl]
-      }
-      console.log(items)
-      chrome.storage.sync.set(items, function () {
-        console.log('保存成功！');
-      });
-
-    });
   }
 
 }
