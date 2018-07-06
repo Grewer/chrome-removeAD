@@ -103,41 +103,75 @@ function getDocumentImage() {
   }
 }
 
+
 function deleteElement() {
+  var myRuleResults = rules[location.origin]
 
-  var iframe = document.getElementsByTagName('iframe'),fl = iframe.length;
-  while (fl--) {
-    iframe[fl].remove()
-  }
-
-  var result = rules[location.origin]
-
-  console.log(result)
-  if (result) {
-    var l = result.length;
+  console.log(myRuleResults)
+  if (myRuleResults) {
+    var l = myRuleResults.length;
     while (l--) {
-      rmElementByFeature(result[l])
+      rmElementByFeature(myRuleResults[l])
     }
   }
 }
 
 function rmElementByFeature(feature) {
-  if (feature.id) {
-    var obj = document.getElementById(feature.id)
-    obj && obj.remove()
-  } else {
+  if (feature.class) {
     var objs = document.getElementsByClassName(feature.class)
     var l = objs.length
+    console.log(objs)
     while (l--) {
-      objs[l].remove()
+      var o = objs[l]
+      o && o.remove()
     }
+  } else {
+    var obj = document.getElementById(feature.id)
+    obj && obj.remove()
   }
 }
 
+var async = null
 
 document.onreadystatechange = function () {
-  console.log('dom load')
   if (document.readyState === 'interactive') {
+    var iframe = document.getElementsByTagName('iframe'), fl = iframe.length;
+    while (fl--) {
+      iframe[fl].remove()
+    }
+
+
+    // 百度的去除广告 start
+    if (location.origin === 'https://www.baidu.com') {
+      document.addEventListener("DOMNodeInserted", function (ev) {
+        var path = ev.target
+        if (/result c-container/.test(path.className)) {
+          console.log('class equal', ev)
+          if (/广告/.test(path.innerText)) {
+            path.remove()
+          }
+        }
+
+        if (async !== null) {
+          clearTimeout(async)
+        }
+        async = setTimeout(function () {
+          var bdad = document.querySelectorAll('div[style="display:block !important;visibility:visible !important"]')
+          var bdl = bdad.length;
+          while (bdl--) {
+            var o = bdad[bdl]
+            o && o.remove()
+          }
+          async = null
+        }, 100)
+
+      }, false);
+
+    }// 百度去除广告 end
+
+    deleteElement()
+  }
+  if (document.readyState === 'complete') {
     deleteElement()
   }
 }
