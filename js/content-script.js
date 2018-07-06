@@ -27,9 +27,9 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.method === 'rmImage') {
     console.log(message.message);
     // 遍历 图片 链接 将路径屏蔽
-    var images = getAllImage(), l = images.length
+    var images = getDocumentImage(), l = images.length
     console.log(location.href)
-    console.log(l,images)
+    console.log(l, images)
     while (l--) {
       if (images[l].src === message.message) {
         return traceTop(images[l])
@@ -89,25 +89,26 @@ function trace(obj, count) {
   }
 }
 
-
-function getAllImage() {
+function getDocumentImage() {
   if (document.images) {
-    getAllImage = function () {
+    getDocumentImage = function () {
       return document.images
     }
     return document.images
   } else {
-    getAllImage = function () {
+    getDocumentImage = function () {
       return document.getElementsByTagName('img')
-
     }
     return document.getElementsByTagName('img')
   }
 }
 
 function deleteElement() {
-  // console.log(rules)
-  console.log(rules, location.origin)
+
+  var iframe = document.getElementsByTagName('iframe'),fl = iframe.length;
+  while (fl--) {
+    iframe[fl].remove()
+  }
 
   var result = rules[location.origin]
 
@@ -133,8 +134,11 @@ function rmElementByFeature(feature) {
   }
 }
 
-window.onload = deleteElement
 
-document.addEventListener('load',function () {
-  console.log('load')
-})
+document.onreadystatechange = function () {
+  console.log('dom load')
+  if (document.readyState === 'interactive') {
+    deleteElement()
+  }
+}
+

@@ -10,9 +10,8 @@ function select(e) {
 
   // 加载时搜索图片 当路径相同时,查看当前dom 的id 加入黑名单,若无class,id,则向其父元素搜索 ,直到父元素为3层以上或为body元素时停止
   // 将其加入黑名单
-  console.log(e)
 
-  if(e.mediaType !== "image") return;
+  if(e.mediaType !== "image") return alert('只能添加图片');
 
   var r = confirm("确认将此链接加入黑名单")
   if (r) {
@@ -23,9 +22,6 @@ function select(e) {
         message: e.srcUrl
       }, function (response) {});
     });
-
-
-
 
   }
 
