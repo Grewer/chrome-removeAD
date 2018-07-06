@@ -3,6 +3,7 @@
   "name": "rmad",
   "version": "0.0.1",
   "description": "remove advertising",
+  "author":"grewer",
   "icons": {
     "16": "img/icon.png",
     "48": "img/icon.png",
@@ -14,7 +15,7 @@
     "http://*/*", // 可以通过executeScript或者insertCSS访问的网站
     "https://*/*"// 可以通过executeScript或者insertCSS访问的网站
   ],
-  "homepage_url": "https://github.com/", // 后续为github地址
+  "homepage_url": "https://github.com/Grewer/chrome-removeAD",
   "background":
   {
     "scripts": ["js/background.js"]
