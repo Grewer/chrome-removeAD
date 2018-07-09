@@ -1,4 +1,3 @@
-
 // polyfill start
 (function (arr) {
   arr.forEach(function (item) {
@@ -20,6 +19,7 @@
 var rules = null
 chrome.storage.sync.get({black: ''}, function (items) {
   rules = items.black
+  localStorage.chromeRMADBlack = JSON.stringify(rules)
 });
 
 
@@ -100,7 +100,8 @@ function getDocumentImage() {
 
 
 function deleteElement() {
-  var myRuleResults = rules[location.origin]
+  var storage = JSON.parse(localStorage.chromeRMADBlack)
+  var myRuleResults = (storage && rules[location.origin]) || rules && rules[location.origin]
 
   if (myRuleResults) {
     var l = myRuleResults.length;
