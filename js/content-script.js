@@ -51,11 +51,13 @@ function store(feature) {
 
   chrome.storage.sync.get({black: {}}, function (items) {
     var result = items.black[host]
-    if (result) {
-      result.push(feature)
-    } else {
-      items.black[host] = [feature]
+
+    if (!result) {
+      items.black[host] = []
     }
+
+    items.black[host].push(feature)
+
     chrome.storage.sync.set(items, function () {
       alert('添加规则成功')
     });
@@ -101,7 +103,7 @@ function getDocumentImage() {
 
 function deleteElement() {
   var storage = JSON.parse(localStorage.chromeRMADBlack)
-  var myRuleResults = (storage && rules[location.origin]) || rules && rules[location.origin]
+  var myRuleResults = (storage && storage[location.origin]) || rules && rules[location.origin]
 
   if (myRuleResults) {
     var l = myRuleResults.length;
