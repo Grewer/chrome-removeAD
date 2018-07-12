@@ -11,6 +11,7 @@
         .item {
             width: 100%;
             margin-bottom: 20px;
+            margin-top: 20px;
         }
 
         .item label {
@@ -46,9 +47,11 @@
             -moz-border-radius: 4px;
             border-radius: 4px;
         }
-        button[disabled]{
+
+        button[disabled] {
             color: graytext;
         }
+
         button:active {
             box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
         }
@@ -66,6 +69,7 @@
     </div>
     <div class="item">
         <label> 添加class</label><input type="text" id="addClass" name="addClass">
+        <p>若同时有id和class,只取id的值</p>
     </div>
     <button id="submit">提交</button>
 </div>

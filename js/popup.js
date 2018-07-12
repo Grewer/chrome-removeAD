@@ -16,10 +16,10 @@ window.onload = function () {
       }
 
       function check(key, value) {
-        var arr = item.black[host], l = arr.length;
+        var arr = items.black[host], l = arr.length;
         if (l > 0) {
-          for (var i = 0; i < l; i++) {
-            if (arr[key] === value) {
+          while (l--) {
+            if (arr[l][key] === value) {
               return false
             }
           }
@@ -33,11 +33,13 @@ window.onload = function () {
       } else if (addClass.value && check('calss', addClass.value)) {
         addStorage({class: addClass.value})
       } else {
+        alert('规则为空或已存在')
         submit.disabled = false
       }
 
       function addStorage(obj) {
         items.black[host].push(obj)
+        console.log(items)
         chrome.storage.sync.set(items, function () {
           alert('添加规则成功')
           submit.disabled = false
