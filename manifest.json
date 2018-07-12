@@ -15,6 +15,7 @@
     "default_popup":"popup.html"
   },
   "permissions": [
+    "tabs",
     "contextMenus",
     //右键
     "storage",

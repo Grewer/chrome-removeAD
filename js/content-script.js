@@ -17,11 +17,16 @@
 // polyfill end
 
 var rules = null
-chrome.storage.sync.get({black: ''}, function (items) {
-  rules = items.black
-  localStorage.chromeRMADBlack = JSON.stringify(rules)
-});
 
+
+function updateStorage() {
+  chrome.storage.sync.get({black: ''}, function (items) {
+    rules = items.black
+    localStorage.chromeRMADBlack = JSON.stringify(rules)
+  });
+}
+
+updateStorage()
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.method === 'rmImage') {
@@ -35,10 +40,48 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     alert('规则添加失败,请手动添加')// iframe 中的图片暂时无法获取
   }
   if (message.method === 'deleteElement') {
-    rmElementByFeature(message.message)
+
+    if (!savePopupMsg(message.message)) {
+      sendResponse(false)
+    }
   }
 
 });
+
+function savePopupMsg(msg) {
+  var host = location.origin
+  chrome.storage.sync.get({black: {}}, function (items) {
+    var result = items.black[host]
+
+    if (!result) {
+      items.black[host] = []
+    }
+
+    function check(key, value) {
+      var arr = items.black[host], l = arr.length;
+      if (l > 0) {
+        while (l--) {
+          if (arr[l][key] === value) {
+            return false
+          }
+        }
+      }
+      return true
+    }
+
+    if ((msg.id && check('id', msg.id)) || (msg.class && check('class', msg.class))) {
+      store(msg, function () { // 会alert
+        updateStorage()
+      })
+      rmElementByFeature(msg)
+      return true
+    } else {
+      return false
+    }
+
+  });
+}
+
 
 function traceTop(image) {
   if (!image) return;
@@ -48,7 +91,7 @@ function traceTop(image) {
 }
 
 // 存储
-function store(feature) {
+function store(feature, cb) {
   var host = location.origin
 
   // 存储结构: black:{host:[{feature},{feature}]}
@@ -64,6 +107,7 @@ function store(feature) {
 
     chrome.storage.sync.set(items, function () {
       alert('添加规则成功')
+      cb && cb()
     });
   }); // 保存规则
 
