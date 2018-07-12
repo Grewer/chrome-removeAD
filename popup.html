@@ -9,20 +9,12 @@
         }
 
         .item {
-            width: 100%;
             margin-bottom: 20px;
             margin-top: 20px;
         }
 
-        .item label {
-            width: 80px;
-            text-align: left;
-            display: inline-block;
-            font-size: 16px;
-            color: #333;
-        }
-
         input {
+            width: 70%;
             outline: 0;
             border: 1px solid #dddddd;
             height: 30px;
@@ -65,10 +57,10 @@
 <body>
 <div style="min-width: 300px;text-align: center">
     <div class="item">
-        <label> 添加id </label><input type="text" id="addId" name="addId">
+        <input type="text" id="addId" name="addId" placeholder="添加id">
     </div>
     <div class="item">
-        <label> 添加class</label><input type="text" id="addClass" name="addClass">
+        <input type="text" id="addClass" name="addClass" placeholder="添加class(只支持单个class)">
         <p>若同时有id和class,只取id的值</p>
     </div>
     <button id="submit">提交</button>

@@ -7,7 +7,9 @@ window.onload = function () {
 
   submit.addEventListener('click', function () {
     submit.disabled = true
-    var host = location.origin
+    var host = location.origin,
+      addIdVal = addId.value.replace(/\s+/g, ""),
+      addClassVal = addClass.value.replace(/\s+/g, "")
     chrome.storage.sync.get({black: {}}, function (items) {
       var result = items.black[host]
 
@@ -28,10 +30,10 @@ window.onload = function () {
       }
 
 
-      if (addId.value && check('id', addId.value)) {
-        addStorage({id: addId.value})
-      } else if (addClass.value && check('calss', addClass.value)) {
-        addStorage({class: addClass.value})
+      if (addIdVal && check('id', addIdVal)) {
+        addStorage({id: addIdVal})
+      } else if (addClassVal && check('calss', addClassVal)) {
+        addStorage({class: addClassVal})
       } else {
         alert('规则为空或已存在')
         submit.disabled = false
@@ -43,6 +45,12 @@ window.onload = function () {
         chrome.storage.sync.set(items, function () {
           alert('添加规则成功')
           submit.disabled = false
+          chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, {
+              method: 'deleteElement',
+              message: obj
+            }, function (response) {});
+          });
         });
       }
     }); // 保存规则

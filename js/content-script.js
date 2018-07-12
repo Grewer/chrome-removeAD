@@ -34,6 +34,10 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     }
     alert('规则添加失败,请手动添加')// iframe 中的图片暂时无法获取
   }
+  if (message.method === 'deleteElement') {
+    rmElementByFeature(message.message)
+  }
+
 });
 
 function traceTop(image) {
@@ -127,7 +131,7 @@ function rmElementByFeature(feature) {
   }
 }
 
-var async = null
+var async = null;
 
 document.onreadystatechange = function () {
   if (document.readyState === 'interactive') {
@@ -162,11 +166,24 @@ document.onreadystatechange = function () {
 
       }, false);
 
-    }// 百度去除广告 end
+    } else {
+      document.addEventListener("DOMNodeInserted", function (ev) {
+        var path = ev.target
+        if (path.nodeName === 'IFRAME') {
+          path.remove()
+        }
 
-    deleteElement()
-  }
-  if (document.readyState === 'complete') {
+        if (async !== null) {
+          clearTimeout(async)
+        }
+        async = setTimeout(function () {
+          deleteElement()
+          async = null
+        }, 100)
+
+      }, false);
+    }
+
     deleteElement()
   }
 }
