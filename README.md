@@ -19,3 +19,6 @@ Right click on the image, click on 'Remove the ad' and click OK.
 
 点击图标,添加自定义规则  
 Click the icon to add a custom rule
+
+右键点击图标,选择选项,可浏览所有规则,并且可以删除它  
+Right click on the icon and select Options to browse all the rules and delete it
