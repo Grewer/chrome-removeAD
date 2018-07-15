@@ -29,9 +29,6 @@ window.onload = function () {
           method: 'deleteElement',
           message: obj
         }, function (response) {
-          if (response === false) {
-            alert('添加规则失败(或为重复)')
-          }
 
         });
       });

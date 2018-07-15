@@ -40,10 +40,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     alert('规则添加失败,请手动添加')// iframe 中的图片暂时无法获取
   }
   if (message.method === 'deleteElement') {
-
-    if (!savePopupMsg(message.message)) {
-      sendResponse(false)
-    }
+    savePopupMsg(message.message)
   }
 
 });
@@ -74,9 +71,8 @@ function savePopupMsg(msg) {
         updateStorage()
       })
       rmElementByFeature(msg)
-      return true
     } else {
-      return false
+      alert('添加规则失败(或为重复)')
     }
 
   });
