@@ -81,6 +81,9 @@ content.addEventListener('click', function (ev) {
     chrome.storage.sync.set(mainRules, function () {
       iSClick = false
       showMsgEle.innerHTML = '删除成功!!'
+      setTimeout(function () {
+        showMsgEle.innerHTML = ''
+      },1000)
     });
 
   }

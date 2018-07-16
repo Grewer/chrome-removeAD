@@ -37,6 +37,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         return traceTop(images[l])
       }
     }
+
     alert('规则添加失败,请手动添加')// iframe 中的图片暂时无法获取
   }
   if (message.method === 'deleteElement') {
@@ -175,12 +176,6 @@ var async = null;
 
 document.onreadystatechange = function () {
   if (document.readyState === 'interactive') {
-    var iframe = document.getElementsByTagName('iframe'), fl = iframe.length;
-    while (fl--) {
-      iframe[fl].remove()
-    }
-
-
     // 百度的去除广告 start
     if (location.origin === 'https://www.baidu.com') {
       document.addEventListener("DOMNodeInserted", function (ev) {
@@ -208,11 +203,6 @@ document.onreadystatechange = function () {
 
     } else {
       document.addEventListener("DOMNodeInserted", function (ev) {
-        var path = ev.target
-        if (path.nodeName === 'IFRAME') {
-          path.remove()
-        }
-
         if (async !== null) {
           clearTimeout(async)
         }
