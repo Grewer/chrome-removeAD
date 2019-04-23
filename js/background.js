@@ -11,7 +11,7 @@ function select(e) {
   // 将其加入黑名单
 
   if(e.mediaType !== "image") return alert('只能添加图片');
-
+  console.log(e);
   var r = confirm("确认将此链接加入黑名单")
   if (r) {
     // 向 content-script.js 发送消息

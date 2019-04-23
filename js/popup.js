@@ -1,40 +1,35 @@
 function getEle(id) {
-  return document.getElementById(id)
+    return document.getElementById(id)
 }
 
 window.onload = function () {
-  var submit = getEle('submit'), addId = getEle('addId'), addClass = getEle('addClass')
+    var submit = getEle('submit'), addQuery = getEle('addQuery')
 
-  submit.addEventListener('click', function () {
-    submit.disabled = true
+    submit.addEventListener('click', function () {
+        submit.disabled = true
 
-    var addIdVal = addId.value.replace(/\s+/g, ""),
-      addClassVal = addClass.value.replace(/\s+/g, "")
+        var value = addQuery.value;
 
+        if (!value) {
+            alert('规则为空')
+            submit.disabled = false
+        }
 
-    if (addIdVal) {
-      send({id: addIdVal})
-    } else if (addClassVal) {
-      send({class: addClassVal})
-    } else {
-      alert('规则为空')
-      submit.disabled = false
-    }
+        send(value)
 
+        function send(query) {
+            submit.disabled = false
+            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, {
+                    method: 'deleteElement',
+                    message: query
+                }, function (response) {
 
-    function send(obj) {
-      submit.disabled = false
-      chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {
-          method: 'deleteElement',
-          message: obj
-        }, function (response) {
-
-        });
-      });
-    }
+                });
+            });
+        }
 
 
-  })
+    })
 
 }
