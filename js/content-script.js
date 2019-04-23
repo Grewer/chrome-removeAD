@@ -1,21 +1,3 @@
-// // polyfill start
-// (function (arr) {
-//     arr.forEach(function (item) {
-//         if (item.hasOwnProperty('remove')) {
-//             return;
-//         }
-//         Object.defineProperty(item, 'remove', {
-//             configurable: true,
-//             enumerable: true,
-//             writable: true,
-//             value: function remove() {
-//                 this.parentNode.removeChild(this);
-//             }
-//         });
-//     });
-// })([Element.prototype, CharacterData.prototype, DocumentType.prototype]);
-// // polyfill end
-
 function removeElementMethod(Node) {
     Node.parentNode.removeChild(Node);
 }
@@ -35,13 +17,33 @@ updateStorage()
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     if (message.method === 'rmImage') {
         // 遍历 图片 链接 将路径屏蔽
-        var images = getDocumentImage(document), l = images.length
-        // while (l--) {
-        //     if (images[l].src === message.message) {
-        //         return traceTop(images[l])
-        //     }
-        // }
-        // 后续优化~~
+        console.log(message.message)
+        var imgQuery = 'img[src="' + message.message + '"]'
+        console.log(imgQuery)
+        const haveImages = document.querySelector('img[href="' + message.message + '"]')
+        if (!haveImages) {
+            var iFrames = querySelect('iframe')
+            console.log(iFrames)
+            var iFramesSize = iFrames.length
+            while (iFramesSize--) {
+                var iFrameName = iFrames[iFramesSize].name
+                var iFameHave = window.frames[iFrameName].document.querySelector(imgQuery)
+                if (iFameHave) {
+                    var path = trace(iFrames[iFramesSize], 0, ' iframe')
+                    store(path, function () {
+                        removeElementMethod(document.querySelector(path))
+                    })
+                    return true;
+                }
+            }
+
+        } else {
+            var path = trace(haveImages, 0, ' img')
+            store(path, function () {
+                removeElementMethod(document.querySelector(path))
+            })
+            return true;
+        }
 
         alert('规则添加失败,请手动添加')// iframe 中的图片暂时无法获取
     }
@@ -50,6 +52,54 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     }
 
 });
+
+function getParent(obj) {
+    if (obj.parentElement) {
+        return obj.parentElement
+    } else {
+        return obj.parentNode
+    }
+}
+
+
+function trace(obj, count, query) {
+    //  选择器中有/的为不正确
+    if (count > 2) return query;
+    if (obj.className) {
+        if (~obj.id.indexOf('/')) {
+            return trace(getParent(obj), 1, query)
+        }
+        return trace(getParent(obj), 2, "." + obj.className + query)
+    } else if (obj.id) {
+        if (~obj.id.indexOf('/')) {
+            return trace(getParent(obj), 0, query)
+        }
+        return "#" + obj.id + query;
+    } else {
+        return trace(getParent(obj), count++, query)
+    }
+}
+
+function store(feature, cb) {
+    var host = location.origin
+    console.log(feature)
+    // 存储结构: black:{host:[{feature},{feature}]}
+
+    chrome.storage.sync.get({black: {}}, function (items) {
+        var result = items.black[host]
+
+        if (!result) {
+            items.black[host] = []
+        }
+
+        items.black[host].push(feature)
+
+        chrome.storage.sync.set(items, function () {
+            alert('添加规则成功')
+            cb && cb()
+        });
+    }); // 保存规则
+}
 
 function savePopupMsg(msg) {
     var host = location.origin
@@ -75,83 +125,21 @@ function savePopupMsg(msg) {
     });
 }
 
-// function traceTop(image) {
-//     if (!image) return;
-//     var feature = trace(image, 0)
-//     rmElementByFeature(feature)
-//     store(feature)
-// }
-
-// 存储
-// function store(feature, cb) {
-//     var host = location.origin
-//
-//     // 存储结构: black:{host:[{feature},{feature}]}
-//
-//     chrome.storage.sync.get({black: {}}, function (items) {
-//         var result = items.black[host]
-//
-//         if (!result) {
-//             items.black[host] = []
-//         }
-//
-//         items.black[host].push(feature)
-//
-//         chrome.storage.sync.set(items, function () {
-//             alert('添加规则成功')
-//             cb && cb()
-//         });
-//     }); // 保存规则
-//
-//
-// }
-
-function getParent(obj) {
-    if (obj.parentElement) {
-        return obj.parentElement
-    } else {
-        return obj.parentNode
-    }
-}
-
-
-function trace(obj, count) {
-    if (count > 3) return false;
-    if (obj.className) {
-        return {class: obj.className}
-    } else if (obj.id) {
-        return {id: obj.id}
-    } else {
-        return trace(getParent(obj), count++)
-    }
-}
-
-function getDocumentImage(document) {
-    if (document.images) {
-        getDocumentImage = function (document) {
-            return document.images
-        }
-        return document.images
-    } else {
-        getDocumentImage = function (document) {
-            return document.getElementsByTagName('img')
-        }
-        return document.getElementsByTagName('img')
-    }
-}
-
 
 function deleteElement() {
     var storage = JSON.parse(localStorage.chromeRMADBlack)
     var myRuleResults = (storage && storage[location.origin]) || rules && rules[location.origin]
-
-    myRuleResults.forEach(function (v) {
+    myRuleResults && myRuleResults.forEach(function (v) {
         rmElementByQuery(v)
     })
 }
 
 function querySelect(query) {
-    return document.querySelectorAll(query)
+    try {
+        return document.querySelectorAll(query)
+    } catch (e) {
+        return []
+    }
 }
 
 function rmElementByQuery(query) {

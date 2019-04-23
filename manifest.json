@@ -1,9 +1,9 @@
 {
   "manifest_version": 2,
   "name": "rmad",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "remove advertising",
-  "author": "grewer",
+  "author": "grewer(grewer@grewer.cn)",
   "icons": {
     "16": "img/icon.png",
     "48": "img/icon.png",

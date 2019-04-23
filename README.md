@@ -21,3 +21,6 @@ Click the icon to add a custom rule
 
 右键点击图标,选择选项,可浏览所有规则,并且可以删除它  
 Right click on the icon and select Options to browse all the rules and delete it
+
+### plan
+后续再 popup 中添加 test 按钮,可以选中符合输入框规则的元素
