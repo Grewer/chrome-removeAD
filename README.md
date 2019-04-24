@@ -10,8 +10,8 @@
 
 ## Usage 
 
-下载该文件,打开Chrome插件页面,将文件拖入浏览器  
-Download the file, open the Chrome plugin page, and drag the file into your browser.
+下载该文件,打开Chrome插件页面,将build文件拖入浏览器  
+Download the file, open the Chrome plugin page, and drag the build file into your browser.
 
 右键单击图片,点击 '去除该广告' ,再点击确定即可  
 Right click on the image, click on 'Remove the ad' and click OK.

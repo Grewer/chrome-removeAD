@@ -3,12 +3,12 @@ function getEle(id) {
 }
 
 window.onload = function () {
-    var submit = getEle('submit'), addQuery = getEle('addQuery')
+    let submit = getEle('submit'), addQuery = getEle('addQuery')
 
     submit.addEventListener('click', function () {
         submit.disabled = true
 
-        var value = addQuery.value;
+        let value = addQuery.value;
 
         if (!value) {
             alert('规则为空')

@@ -1,0 +1,35 @@
+{
+  "name": "@grewer/rmad",
+  "version": "1.0.0",
+  "description": "Chrome plugin remove advertising",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Grewer/chrome-removeAD.git"
+  },
+  "keywords": [
+    "chrome",
+    "plugin",
+    "ad"
+  ],
+  "author": "grewer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Grewer/chrome-removeAD/issues"
+  },
+  "homepage": "https://github.com/Grewer/chrome-removeAD#readme",
+  "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "gulp": "^4.0.1",
+    "gulp-babel": "^8.0.0",
+    "gulp-minify": "^3.1.0"
+  },
+  "dependencies": {
+    "del": "^4.1.0"
+  }
+}

@@ -7,7 +7,7 @@ function cT(text) {
 }
 
 function createRule(arr, domain) {
-  var l = arr.length, rule = cE('ul'), r, i
+  let l = arr.length, rule = cE('ul'), r, i
   rule.className = 'rules'
   rule.dataset.domain = domain
   while (l--) {
@@ -23,19 +23,19 @@ function createRule(arr, domain) {
 }
 
 
-var cdf = document.createDocumentFragment();
-var content = document.getElementsByClassName('content')[0]
-var mainRules = null
+let cdf = document.createDocumentFragment();
+let content = document.getElementsByClassName('content')[0]
+let mainRules = null
 chrome.storage.sync.get({black: {}}, function (items) {
-  var black = items.black, arr = Object.keys(items.black || {}), l = arr.length
+  let black = items.black, arr = Object.keys(items.black || {}), l = arr.length
 
   if (l === 0) {
     cdf.appendChild(cT('暂无'))
   }
 
   while (l--) {
-    var key = arr[l]
-    var rules = cE('li'), domain = cE('span'), label = cE('label'), text = ''
+    let key = arr[l]
+    let rules = cE('li'), domain = cE('span'), label = cE('label'), text = ''
     label.appendChild(cT('域名:'))
     domain.appendChild(label)
     domain.appendChild(cT(key))
@@ -51,20 +51,20 @@ chrome.storage.sync.get({black: {}}, function (items) {
   mainRules = items
 });
 
-var iSClick = false
+let iSClick = false
 content.addEventListener('click', function (ev) {
-  var target = ev.target
+  let target = ev.target
   if (target.innerText === 'X') {
     if (iSClick) return;
     iSClick = true
-    var showMsgEle = document.getElementsByClassName('showMsg')[0]
+    let showMsgEle = document.getElementsByClassName('showMsg')[0]
     showMsgEle.innerHTML = '正在删除中...'
-    var ruleEle = target.parentNode, domainEle = ruleEle.parentNode, domain = domainEle.dataset.domain,
+    let ruleEle = target.parentNode, domainEle = ruleEle.parentNode, domain = domainEle.dataset.domain,
       rule = ruleEle.dataset.k;
     rule = JSON.parse(rule)
-    var key = rule.id ? 'id' : 'class', value = rule[key]
+    let key = rule.id ? 'id' : 'class', value = rule[key]
 
-    var arr = mainRules.black[domain], l = arr.length
+    let arr = mainRules.black[domain], l = arr.length
 
     while (l--) {
       if (arr[l][key] === value) {
