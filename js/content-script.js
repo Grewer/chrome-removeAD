@@ -20,7 +20,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         console.log(message.message)
         var imgQuery = 'img[src="' + message.message + '"]'
         console.log(imgQuery)
-        const haveImages = document.querySelector('img[href="' + message.message + '"]')
+        const haveImages = document.querySelector(imgQuery)
+        console.log(haveImages)
         if (!haveImages) {
             var iFrames = querySelect('iframe')
             console.log(iFrames)
@@ -38,7 +39,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
             }
 
         } else {
-            var path = trace(haveImages, 0, ' img')
+            var path = trace(haveImages, 0, "")
             store(path, function () {
                 removeElementMethod(document.querySelector(path))
             })
@@ -64,12 +65,14 @@ function getParent(obj) {
 
 function trace(obj, count, query) {
     //  选择器中有/的为不正确
-    if (count > 2) return query;
+    console.log(query)
+    if (count > 2 || query.length > 20) return query;
     if (obj.className) {
         if (~obj.id.indexOf('/')) {
-            return trace(getParent(obj), 1, query)
+            return trace(getParent(obj), count++, query)
         }
-        return trace(getParent(obj), 2, "." + obj.className + query)
+        // 规则过多
+        return trace(getParent(obj), count++, " ." + obj.className + query)
     } else if (obj.id) {
         if (~obj.id.indexOf('/')) {
             return trace(getParent(obj), 0, query)
