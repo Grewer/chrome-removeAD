@@ -20,7 +20,7 @@ gulp.task('copyImage', function () {
 });
 
 gulp.task('copyJSON', function () {
-    return gulp.src('manifest.json')
+    return gulp.src('src/manifest.json')
         .pipe(gulp.dest('build'))
 });
 

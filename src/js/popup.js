@@ -3,7 +3,8 @@ function getEle(id) {
 }
 
 window.onload = function () {
-    let submit = getEle('submit'), addQuery = getEle('addQuery')
+    let submit = getEle('submit'), addQuery = getEle('addQuery'),
+        jumpOptions = getEle('jumpOption')
 
     submit.addEventListener('click', function () {
         submit.disabled = true
@@ -13,6 +14,7 @@ window.onload = function () {
         if (!value) {
             alert('规则为空')
             submit.disabled = false
+            return;
         }
 
         send(value)
@@ -28,8 +30,10 @@ window.onload = function () {
                 });
             });
         }
-
-
     })
 
+
+    jumpOptions.addEventListener('click', function () {
+        chrome.tabs.create({url: 'chrome://extensions/?options=' + chrome.runtime.id});
+    })
 }

@@ -172,7 +172,7 @@ document.onreadystatechange = function () {
         deleteElement()
 
 
-        if (location.origin === "https://blog.csdn.net"){
+        if (location.origin === "https://blog.csdn.net") {
             document.querySelector('a.btn-readmore').click()
         }
 
