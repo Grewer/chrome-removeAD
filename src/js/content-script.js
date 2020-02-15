@@ -8,7 +8,6 @@ let rules = null
 function updateStorage() {
     chrome.storage.sync.get({black: ''}, function (items) {
         rules = items.black
-        localStorage.chromeRMADBlack = JSON.stringify(rules)
     });
 }
 
@@ -109,8 +108,7 @@ function saveMsg(msg) {
 
 
 function deleteElement() {
-    let storage = JSON.parse(localStorage.chromeRMADBlack)
-    let myRuleResults = (storage && storage[location.origin]) || rules && rules[location.origin]
+    let myRuleResults = rules && rules[location.origin]
     myRuleResults && myRuleResults.forEach(function (v) {
         rmElementByQuery(v)
     })
@@ -126,7 +124,6 @@ function querySelect(query) {
 
 function rmElementByQuery(query) {
     let elements = querySelect(query)
-    console.log(elements)
     elements.forEach(function (v) {
         removeElementMethod(v)
     })
@@ -135,6 +132,7 @@ function rmElementByQuery(query) {
 let async = null;
 
 document.onreadystatechange = function () {
+    // 文档已被解析，"正在加载"状态结束，但是诸如图像，样式表和框架之类的子资源仍在加载。
     if (document.readyState === 'interactive') {
         // 百度的去除广告 start
         if (location.origin === 'https://www.baidu.com') {
@@ -172,6 +170,12 @@ document.onreadystatechange = function () {
         }
 
         deleteElement()
+
+
+        if (location.origin === "https://blog.csdn.net"){
+            document.querySelector('a.btn-readmore').click()
+        }
+
     }
 }
 

@@ -2,16 +2,20 @@ const gulp = require('gulp');
 const minify = require('gulp-minify');
 const del = require('del');
 const babel = require('gulp-babel');
+const htmlmin = require('gulp-htmlmin');
+const minifyInline = require('gulp-minify-inline');
 
 gulp.task('clean', () => del(['build/*'], {dot: true}));
 
-gulp.task('copyHtml', function () {
-    return gulp.src('html/*')
+gulp.task('miniHtml', function () {
+    return gulp.src('src/html/*')
+        .pipe(minifyInline())
+        .pipe(htmlmin({ collapseWhitespace: true }))
         .pipe(gulp.dest('build/html'))
 });
 
 gulp.task('copyImage', function () {
-    return gulp.src('img/*')
+    return gulp.src('src/img/*')
         .pipe(gulp.dest('build/img'))
 });
 
@@ -20,8 +24,8 @@ gulp.task('copyJSON', function () {
         .pipe(gulp.dest('build'))
 });
 
-gulp.task('default', gulp.series('clean', 'copyHtml', 'copyJSON', 'copyImage', function () {
-    return gulp.src('js/*.js')
+gulp.task('default', gulp.series('clean', 'miniHtml', 'copyJSON', 'copyImage', function () {
+    return gulp.src('src/js/*.js')
         .pipe(babel({
             presets: [
                 [
