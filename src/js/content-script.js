@@ -173,7 +173,7 @@ document.onreadystatechange = function () {
 
 
         if (location.origin === "https://blog.csdn.net") {
-            document.querySelector('a.btn-readmore').click()
+            document.querySelector('a.btn-readmore')?.click()
         }
 
     }
