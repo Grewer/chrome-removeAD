@@ -1,13 +1,23 @@
+function getParent(obj) {
+    return obj.parentElement || obj.parentNode
+}
+
+
 function removeElementMethod(Node) {
-    Node.parentNode.removeChild(Node);
+    try {
+        getParent(Node).removeChild(Node);
+    } catch (e) {
+    }
 }
 
 let rules = null
 
+let isRmFrame = true
 
 function updateStorage() {
-    chrome.storage.sync.get({black: ''}, function (items) {
+    chrome.storage.sync.get({black: {}, isRmFrame: true}, function (items) {
         rules = items.black
+        isRmFrame = items.isRmFrame
     });
 }
 
@@ -51,12 +61,23 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     }
     if (message.method === 'deleteElement') {
         saveMsg(message.message)
+        return;
     }
-
+    if (message.method === 'rmFrame') {
+        saveRMFrame(message.message, sendResponse)
+    }
 });
 
-function getParent(obj) {
-    return obj.parentElement || obj.parentNode
+function saveRMFrame(checked, sendResponse) {
+    chrome.storage.sync.get({black: {}, isRmFrame: true}, function (items) {
+        items.isRmFrame = checked
+        chrome.storage.sync.set(items, function () {
+            if (checked) {
+                RMFrame()
+            }
+            sendResponse && sendResponse()
+        });
+    });
 }
 
 
@@ -85,7 +106,7 @@ function trace(obj, count, query) {
 function saveMsg(msg) {
     let host = location.origin
     console.log('添加 rule 后', msg)
-    chrome.storage.sync.get({black: {}}, function (items) {
+    chrome.storage.sync.get({black: {}, isRmFrame: true}, function (items) {
         let result = items.black[host]
 
         if (!result) {
@@ -129,6 +150,31 @@ function rmElementByQuery(query) {
     })
 }
 
+function RMFrame() {
+    let elements = querySelect('iframe')
+    elements.forEach(function (v) {
+        const parent = getParent(v)
+        const brother = parent.children
+        if (brother && brother.length === 1) {
+            removeElementMethod(v)
+        } else {
+            if (parent.nodeName === "BODY" || parent.nodeName === "HTML") {
+                removeElementMethod(v)
+            } else {
+                let i = source.length
+                while (i--) {
+                    const ele = source[i]
+                    if (!ele) {
+                        continue
+                    }
+                    removeElementMethod(ele)
+                }
+            }
+        }
+    })
+}
+
+
 let async = null;
 
 document.onreadystatechange = function () {
@@ -163,6 +209,9 @@ document.onreadystatechange = function () {
                 }
                 async = setTimeout(function () {
                     deleteElement()
+                    if (isRmFrame) {
+                        RMFrame()
+                    }
                     async = null
                 }, 100)
 
@@ -175,7 +224,6 @@ document.onreadystatechange = function () {
         if (location.origin === "https://blog.csdn.net") {
             document.querySelector('a.btn-readmore')?.click()
         }
-
     }
 }
 

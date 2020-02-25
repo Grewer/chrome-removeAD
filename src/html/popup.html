@@ -13,7 +13,7 @@
             margin-top: 20px;
         }
 
-        input {
+        input[type="text"] {
             width: 70%;
             outline: 0;
             border: 1px solid #dddddd;
@@ -37,6 +37,7 @@
             cursor: pointer;
             -webkit-border-radius: 4px;
             border-radius: 4px;
+            display: inline-block;
         }
 
         button[disabled] {
@@ -56,15 +57,24 @@
             color: #009fff;
             cursor: pointer;
         }
+
+        .tips {
+            color: #999999;
+            font-size: 12px;
+            margin-left: 4px;
+        }
     </style>
 </head>
 <body>
 <div style="min-width: 300px;text-align: center">
     <div class="item">
-        <input type="text" id="addQuery" name="选择器" placeholder="请输入选择器">
-        <p>类似于 jq 的选择器</p>
+        <input type="text" id="addQuery" name="选择器" placeholder="请输入选择器(类似于 jq 的选择器)">
+        <button id="submit">提交</button>
     </div>
-    <button id="submit">提交</button>
+    <p>
+        <input type="checkbox" checked id="rmFrame"/><label for="rmFrame">屏蔽 iframe <span
+            class="tips">(打开/关闭会自动刷新页面)</span></label>
+    </p>
 
     <p id="jumpOption">
         点此删除规则
