@@ -161,9 +161,9 @@ function RMFrame() {
             if (parent.nodeName === "BODY" || parent.nodeName === "HTML") {
                 removeElementMethod(v)
             } else {
-                let i = source.length
+                let i = brother.length
                 while (i--) {
-                    const ele = source[i]
+                    const ele = brother[i]
                     if (!ele) {
                         continue
                     }
