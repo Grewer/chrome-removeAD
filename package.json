@@ -23,13 +23,15 @@
   },
   "homepage": "https://github.com/Grewer/chrome-removeAD#readme",
   "devDependencies": {
-    "@babel/core": "^7.4.3",
-    "@babel/preset-env": "^7.4.3",
-    "gulp": "^4.0.1",
+    "@types/chrome": "0.0.103",
+    "@types/gulp": "^4.0.6",
+    "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-minify": "^3.1.0",
     "gulp-minify-css": "^1.2.4",
-    "gulp-minify-inline": "^1.1.0"
+    "gulp-minify-inline": "^1.1.0",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "typescript": "^3.8.3"
   },
   "dependencies": {
     "del": "^4.1.0",

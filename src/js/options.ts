@@ -1,12 +1,12 @@
-function cE(type) {
+function cE(type: string) {
   return document.createElement(type)
 }
 
-function cT(text) {
+function cT(text: string) {
   return document.createTextNode(text)
 }
 
-function createRule(arr, domain) {
+function createRule(arr: string[], domain: string) {
   let l = arr.length, rule = cE('ul'), r, i
   rule.className = 'rules'
   rule.dataset.domain = domain
@@ -23,10 +23,10 @@ function createRule(arr, domain) {
 }
 
 
-let cdf = document.createDocumentFragment();
+let cdf = document.createDocumentFragment()
 let content = document.getElementsByClassName('content')[0]
-let mainRules = null
-chrome.storage.sync.get({black: {}}, function (items) {
+let mainRules: any = null
+chrome.storage.sync.get({ black: {} }, function (items) {
   let black = items.black, arr = Object.keys(items.black || {}), l = arr.length
 
   if (l === 0) {
@@ -49,19 +49,23 @@ chrome.storage.sync.get({black: {}}, function (items) {
 
   content.appendChild(cdf)
   mainRules = items
-});
+})
 
 let iSClick = false
 content.addEventListener('click', function (ev) {
-  let target = ev.target
+  let target = <HTMLElement>ev.target
   if (target.innerText === 'X') {
-    if (iSClick) return;
+    if (iSClick) return
     iSClick = true
     let showMsgEle = document.getElementsByClassName('showMsg')[0]
     showMsgEle.innerHTML = '正在删除中...'
-    let ruleEle = target.parentNode, domainEle = ruleEle.parentNode, domain = domainEle.dataset.domain,
-      rule = ruleEle.dataset.k;
-    rule = JSON.parse(rule)
+    // @ts-ignore
+    let ruleEle = <HTMLElement>target.parentNode, domainEle = <HTMLElement>ruleEle.parentNode,
+      domain = domainEle.dataset.domain
+    // @ts-ignore
+
+
+    let rule = JSON.parse(ruleEle.dataset.k)
     let key = rule.id ? 'id' : 'class', value = rule[key]
 
     let arr = mainRules.black[domain], l = arr.length
@@ -72,9 +76,9 @@ content.addEventListener('click', function (ev) {
         ruleEle.remove()
         if (mainRules.black[domain].length === 0) {
           delete mainRules.black[domain]
-          domainEle.parentNode.remove()
+          domainEle.parentElement.remove()
         }
-        break;
+        break
       }
     }
 
@@ -83,8 +87,8 @@ content.addEventListener('click', function (ev) {
       showMsgEle.innerHTML = '删除成功!!'
       setTimeout(function () {
         showMsgEle.innerHTML = ''
-      },1000)
-    });
+      }, 1000)
+    })
 
   }
 })
