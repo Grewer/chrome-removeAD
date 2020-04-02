@@ -52,7 +52,10 @@ window.onload = function () {
 
   console.log(chrome.tabs.reload)
 
-  chrome.storage.sync.get({ black: {}, isRmFrame: true }, function (items) {
-    rmFrame.checked = items.isRmFrame
+  chrome.storage.sync.get({ black: {}, isRmFrame: {} }, function (items) {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      const url = new URL(tabs[0].url)
+      rmFrame.checked = items.isRmFrame[url.host] ?? true
+    })
   })
 }

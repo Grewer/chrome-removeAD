@@ -2,7 +2,7 @@
 //   constructor() {
 //     this.rules = null
 //     this.isRmFrame = true
-//     this.host = location.origin
+//     this.host = host
 //   }
 //
 //   getParent(obj) {
@@ -29,13 +29,13 @@
 //   }
 // }
 
-function getParent(obj: HTMLElement): HTMLElement {
-  return <HTMLElement>(obj.parentElement || obj.parentNode)
+function getParent(obj: HTMLElement | Element): HTMLElement {
+  return obj.parentElement
 }
 
 function removeElementMethod(Node: HTMLElement | Element) {
   try {
-    this.getParent(Node).removeChild(Node)
+    getParent(Node).removeChild(Node)
   } catch (e) {
   }
 }
@@ -44,10 +44,13 @@ let rules: { [x: string]: any } = null
 
 let isRmFrame = true
 
+const host = location.host
+
 function updateStorage() {
-  chrome.storage.sync.get({ black: {}, isRmFrame: true }, function (items) {
+  chrome.storage.sync.get({ black: {}, isRmFrame: {} }, function (items) {
+    console.log('init getStorage',items)
     rules = items.black
-    isRmFrame = items.isRmFrame
+    isRmFrame = items.isRmFrame[location.host] ?? true
   })
 }
 
@@ -82,6 +85,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         alert('iframe 被阻拦,请手动添加规则')
         return
       }
+      return
     } else {
       let path = trace(haveImages, 0, '')
       saveMsg(path)
@@ -101,8 +105,10 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
 function saveRMFrame(checked: boolean, sendResponse: { (response?: any): void; (): any }) {
   chrome.storage.sync.get({ black: {}, isRmFrame: {} }, function (items) {
-    items.isRmFrame[location.origin] = checked
+    items.isRmFrame[host] = checked
+    console.log('get RMFrame',items)
     chrome.storage.sync.set(items, function () {
+      console.log('RMFrame', items.isRmFrame)
       if (checked) {
         RMFrame()
       }
@@ -160,7 +166,7 @@ function saveMsg(msg: string) {
 
 
 function deleteElement() {
-  let myRuleResults = rules && rules[location.origin]
+  let myRuleResults = rules && rules[host]
   myRuleResults && myRuleResults.forEach(function (v: string) {
     rmElementByQuery(v)
   })
@@ -194,7 +200,7 @@ function RMFrame() {
       } else {
         let i = brother.length
         while (i--) {
-          const ele = brother[i]
+          const ele: Element = brother[i]
           if (!ele) {
             continue
           }
@@ -212,7 +218,7 @@ document.onreadystatechange = function () {
   // 文档已被解析，"正在加载"状态结束，但是诸如图像，样式表和框架之类的子资源仍在加载。
   if (document.readyState === 'interactive') {
     // 百度的去除广告 start
-    if (location.origin === 'https://www.baidu.com') {
+    if (host === 'www.baidu.com') {
       document.addEventListener('DOMNodeInserted', function (ev) {
         let path = ev.target as HTMLElement
         if (/result c-container/.test(path.className)) {
@@ -225,7 +231,7 @@ document.onreadystatechange = function () {
           clearTimeout(async)
         }
         async = setTimeout(function () {
-          let bdad = document.querySelectorAll('div[style="display:block !important;visibility:visible !important"]')
+          let bdad = document.querySelectorAll<HTMLElement>('div[style="display:block !important;visibility:visible !important"]')
           bdad.forEach(function (value) {
             removeElementMethod(value)
           })
@@ -252,7 +258,7 @@ document.onreadystatechange = function () {
     deleteElement()
 
 
-    if (location.origin === 'https://blog.csdn.net') {
+    if (host === 'blog.csdn.net') {
       (document.querySelector('a.btn-readmore') as HTMLElement | null)?.click()
     }
   }
