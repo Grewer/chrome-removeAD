@@ -1,5 +1,11 @@
+import Tab = chrome.tabs.Tab
+
 function getEle(id: string): HTMLElement {
   return document.getElementById(id)
+}
+
+function getCurrent(callback: (result: Tab[]) => void) {
+  chrome.tabs.query({ active: true, currentWindow: true }, callback)
 }
 
 window.onload = function () {
@@ -23,7 +29,7 @@ window.onload = function () {
 
     function send(query: string) {
       submit.disabled = false
-      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      getCurrent(tabs => {
         chrome.tabs.sendMessage(tabs[0].id, {
           method: 'deleteElement',
           message: query
@@ -40,7 +46,7 @@ window.onload = function () {
 
   rmFrame.addEventListener('change', function (ev) {
     const checked = (<HTMLInputElement>ev.target).checked
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    getCurrent(tabs => {
       chrome.tabs.sendMessage(tabs[0].id, {
         method: 'rmFrame',
         message: checked
@@ -53,7 +59,7 @@ window.onload = function () {
   console.log(chrome.tabs.reload)
 
   chrome.storage.sync.get({ black: {}, isRmFrame: {} }, function (items) {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    getCurrent(tabs => {
       const url = new URL(tabs[0].url)
       rmFrame.checked = items.isRmFrame[url.host] ?? true
     })

@@ -48,7 +48,7 @@ const host = location.host
 
 function updateStorage() {
   chrome.storage.sync.get({ black: {}, isRmFrame: {} }, function (items) {
-    console.log('init getStorage',items)
+    console.log('init getStorage', items)
     rules = items.black
     isRmFrame = items.isRmFrame[location.host] ?? true
   })
@@ -106,13 +106,13 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 function saveRMFrame(checked: boolean, sendResponse: { (response?: any): void; (): any }) {
   chrome.storage.sync.get({ black: {}, isRmFrame: {} }, function (items) {
     items.isRmFrame[host] = checked
-    console.log('get RMFrame',items)
+    console.log('get RMFrame', items)
     chrome.storage.sync.set(items, function () {
       console.log('RMFrame', items.isRmFrame)
       if (checked) {
         RMFrame()
       }
-      sendResponse && sendResponse()
+      sendResponse && sendResponse({ success: true })
     })
   })
 }
